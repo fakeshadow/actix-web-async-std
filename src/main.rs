@@ -1,20 +1,29 @@
 use std::future::Future;
+use std::io;
 use std::net::SocketAddr;
 use std::pin::Pin;
 use std::task::{Context, Poll};
 use std::time::{Duration, Instant};
-use std::io;
 
 use actix_server::{FromMio, MioStream, ServiceStream};
 use actix_web::rt::{RuntimeFactory, RuntimeService, SleepService};
 use actix_web::{get, App, HttpServer};
 use async_std::io::{Read, Write};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use tokio::io::{AsyncRead, AsyncWrite};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // load ssl keys
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("src/key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("src/cert.pem").unwrap();
+
     HttpServer::<_, _, _, _, AsyncStdRtFactory>::new_with(|| App::new().service(index))
         .bind_with::<AsyncStdTcpStream, _>("0.0.0.0:8080")?
+        .bind_openssl_with::<AsyncStdTcpStream, _>("0.0.0.0:8081", builder)?
         .run()
         .await
 }
