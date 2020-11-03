@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
         .unwrap();
     builder.set_certificate_chain_file("src/cert.pem").unwrap();
 
-    HttpServer::<_, _, _, _, AsyncStdRtFactory>::new_with(|| App::new().service(index))
+    HttpServer::new_with::<AsyncStdRtFactory>(|| App::new().service(index))
         .bind_with::<AsyncStdTcpStream, _>("0.0.0.0:8080")?
         .bind_openssl_with::<AsyncStdTcpStream, _>("0.0.0.0:8081", builder)?
         .run()
@@ -162,7 +162,8 @@ impl SleepService for AsyncStdSleep {
         self.deadline
     }
 
-    fn sleep_reset(&mut self, dead_line: Instant) {
-        self.timer.set_at(dead_line)
+    fn sleep_reset(&mut self, deadline: Instant) {
+        self.timer.set_at(deadline);
+        self.deadline = deadline;
     }
 }

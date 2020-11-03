@@ -43,7 +43,7 @@ dependencies = [
 [[package]]
 name = "actix-http"
 version = "2.1.0"
-source = "git+https://github.com/actix/actix-web?branch=async-std#99835d7f809e38d95dae3ea2c6cb481f16abf755"
+source = "git+https://github.com/actix/actix-web?branch=async-std#ea8f51537ea76848fd30bd558b39e0bda610c41b"
 dependencies = [
  "actix-codec",
  "actix-connect",
@@ -126,7 +126,7 @@ dependencies = [
 [[package]]
 name = "actix-server"
 version = "1.0.4"
-source = "git+https://github.com/fakeshadow/actix-net?branch=private#473b317a4cf66bf21a2207fb7daad277f8ad9ce0"
+source = "git+https://github.com/fakeshadow/actix-net?branch=private#94e4d2843c0b0160fdfe2e0833dec3bbdda33f75"
 dependencies = [
  "actix-codec",
  "actix-rt",
@@ -182,7 +182,7 @@ dependencies = [
 [[package]]
 name = "actix-tls"
 version = "2.0.0"
-source = "git+https://github.com/fakeshadow/actix-net?branch=private#473b317a4cf66bf21a2207fb7daad277f8ad9ce0"
+source = "git+https://github.com/fakeshadow/actix-net?branch=private#94e4d2843c0b0160fdfe2e0833dec3bbdda33f75"
 dependencies = [
  "actix-codec",
  "actix-server",
@@ -220,7 +220,7 @@ dependencies = [
 [[package]]
 name = "actix-web"
 version = "3.2.0"
-source = "git+https://github.com/actix/actix-web?branch=async-std#99835d7f809e38d95dae3ea2c6cb481f16abf755"
+source = "git+https://github.com/actix/actix-web?branch=async-std#ea8f51537ea76848fd30bd558b39e0bda610c41b"
 dependencies = [
  "actix-codec",
  "actix-http",
@@ -340,7 +340,6 @@ dependencies = [
  "futures-lite",
  "num_cpus",
  "once_cell",
- "tokio",
 ]
 
 [[package]]

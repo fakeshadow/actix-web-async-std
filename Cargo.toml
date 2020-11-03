@@ -9,16 +9,16 @@ actix-http = { git = "https://github.com/actix/actix-web", branch = "async-std",
 actix-server = { git = "https://github.com/fakeshadow/actix-net", branch = "private" }
 actix-web = { git = "https://github.com/actix/actix-web", branch = "async-std", features = ["openssl", "rustls"] }
 
-async-std = { version = "1.6.5", features = ["unstable", "tokio02"] }
+async-std = { version = "1.6.5", features = ["unstable"] }
 async-io = "1.1.10"
 openssl = "0.10"
 tokio = "0.2.22"
 
 [patch.crates-io]
 actix-http = { git = "https://github.com/actix/actix-web", branch = "async-std", features = ["openssl", "rustls"] }
-actix-tls = { git = "https://github.com/fakeshadow/actix-net", branch = "private" }
 actix-rt = { git = "https://github.com/fakeshadow/actix-net", branch = "private" }
 actix-server = { git = "https://github.com/fakeshadow/actix-net", branch = "private" }
+actix-tls = { git = "https://github.com/fakeshadow/actix-net", branch = "private" }
 
 [profile.release]
 lto = "fat"
