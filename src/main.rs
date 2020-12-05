@@ -62,22 +62,21 @@ struct TestMiddlewareService<S> {
 }
 
 impl<S> Service for TestMiddlewareService<S>
-where
-    S: Service,
+    where
+        S: Service,
 {
     type Request = S::Request;
     type Response = S::Response;
     type Error = S::Error;
     type Future = impl Future<Output = Result<Self::Response, Self::Error>>;
 
-    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+    fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.service.poll_ready(cx)
     }
 
-    fn call(&mut self, req: Self::Request) -> Self::Future {
+    fn call(&self, req: Self::Request) -> Self::Future {
         let fut = self.service.call(req);
         async move {
-            println!("passing through");
             fut.await
         }
     }

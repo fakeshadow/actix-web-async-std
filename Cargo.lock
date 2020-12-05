@@ -19,8 +19,7 @@ dependencies = [
 [[package]]
 name = "actix-connect"
 version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "177837a10863f15ba8d3ae3ec12fac1099099529ed20083a27fdfe247381d0dc"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "actix-codec",
  "actix-rt",
@@ -43,7 +42,7 @@ dependencies = [
 [[package]]
 name = "actix-http"
 version = "2.2.0"
-source = "git+https://github.com/actix/actix-web?branch=async-std#a9e25d445e25bbc899676f8aa141138b6cf45015"
+source = "git+https://github.com/actix/actix-web?branch=async-std#ac2c019a1a99d748e6de487b655c42a0bccc8e50"
 dependencies = [
  "actix-codec",
  "actix-connect",
@@ -101,8 +100,7 @@ dependencies = [
 [[package]]
 name = "actix-router"
 version = "0.2.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbd1f7dbda1645bf7da33554db60891755f6c01c1b2169e2f4c492098d30c235"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "bytestring",
  "http",
@@ -114,11 +112,10 @@ dependencies = [
 [[package]]
 name = "actix-rt"
 version = "1.1.1"
-source = "git+https://github.com/fakeshadow/actix-net?branch=private#f0d94ba4ca44936fcb7b234c076d2348f314d430"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "actix-codec",
  "actix-macros",
- "actix-threadpool",
  "futures-channel",
  "tokio",
 ]
@@ -126,7 +123,7 @@ dependencies = [
 [[package]]
 name = "actix-server"
 version = "1.0.4"
-source = "git+https://github.com/fakeshadow/actix-net?branch=private#f0d94ba4ca44936fcb7b234c076d2348f314d430"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "actix-codec",
  "actix-rt",
@@ -143,11 +140,9 @@ dependencies = [
 [[package]]
 name = "actix-service"
 version = "1.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0052435d581b5be835d11f4eb3bce417c8af18d87ddf8ace99f8e67e595882bb"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
- "futures-util",
- "pin-project 0.4.27",
+ "pin-project-lite 0.2.0",
 ]
 
 [[package]]
@@ -182,7 +177,7 @@ dependencies = [
 [[package]]
 name = "actix-tls"
 version = "2.0.0"
-source = "git+https://github.com/fakeshadow/actix-net?branch=private#f0d94ba4ca44936fcb7b234c076d2348f314d430"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "actix-codec",
  "actix-server",
@@ -199,8 +194,7 @@ dependencies = [
 [[package]]
 name = "actix-utils"
 version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e9022dec56632d1d7979e59af14f0597a28a830a9c1c7fec8b2327eb9f16b5a"
+source = "git+https://github.com/fakeshadow/actix-net?branch=feat/type_alias_impl_trait#f017bbc052c546fed6fb0da1e2e3bccfbaabb597"
 dependencies = [
  "actix-codec",
  "actix-rt",
@@ -212,14 +206,14 @@ dependencies = [
  "futures-sink",
  "futures-util",
  "log",
- "pin-project 0.4.27",
+ "pin-project-lite 0.2.0",
  "slab",
 ]
 
 [[package]]
 name = "actix-web"
 version = "3.3.2"
-source = "git+https://github.com/actix/actix-web?branch=async-std#a9e25d445e25bbc899676f8aa141138b6cf45015"
+source = "git+https://github.com/actix/actix-web?branch=async-std#ac2c019a1a99d748e6de487b655c42a0bccc8e50"
 dependencies = [
  "actix-codec",
  "actix-http",
@@ -795,18 +789,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "futures-macro"
-version = "0.3.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77408a692f1f97bcc61dc001d752e00643408fbc922e4d634c655df50d595556"
-dependencies = [
- "proc-macro-hack",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "futures-sink"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -830,14 +812,11 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "futures-io",
- "futures-macro",
  "futures-sink",
  "futures-task",
  "memchr",
  "pin-project 1.0.2",
  "pin-utils",
- "proc-macro-hack",
- "proc-macro-nested",
  "slab",
 ]
 
@@ -1407,12 +1386,6 @@ name = "proc-macro-hack"
 version = "0.5.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
-
-[[package]]
-name = "proc-macro-nested"
-version = "0.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eba180dafb9038b050a4c280019bbedf9f2467b61e5d892dcad585bb57aadc5a"
 
 [[package]]
 name = "proc-macro2"
