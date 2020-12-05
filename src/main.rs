@@ -1,3 +1,5 @@
+#![feature(type_alias_impl_trait)]
+
 use std::future::Future;
 use std::io;
 use std::net::SocketAddr;
@@ -6,6 +8,7 @@ use std::task::{Context, Poll};
 use std::time::{Duration, Instant};
 
 use actix_server::{FromMio, MioStream, ServiceStream};
+use actix_web::dev::{Service, Transform};
 use actix_web::rt::{RuntimeFactory, RuntimeService, SleepService};
 use actix_web::{get, App, HttpServer};
 use async_std::io::{Read, Write};
@@ -21,7 +24,7 @@ async fn main() -> std::io::Result<()> {
         .unwrap();
     builder.set_certificate_chain_file("src/cert.pem").unwrap();
 
-    HttpServer::new_with::<AsyncStdRtFactory>(|| App::new().service(index))
+    HttpServer::new_with::<AsyncStdRtFactory>(|| App::new().wrap(TestMiddleware).service(index))
         .bind_with::<AsyncStdTcpStream, _>("0.0.0.0:8080")?
         .bind_openssl_with::<AsyncStdTcpStream, _>("0.0.0.0:8081", builder)?
         .run()
@@ -31,6 +34,53 @@ async fn main() -> std::io::Result<()> {
 #[get("/")]
 async fn index() -> &'static str {
     "Ok"
+}
+
+struct TestMiddleware;
+
+impl<S> Transform<S> for TestMiddleware
+where
+    S: Service,
+{
+    type Request = S::Request;
+    type Response = S::Response;
+    type Error = S::Error;
+    type Transform = TestMiddlewareService<S>;
+    type InitError = ();
+    type Future = impl Future<Output = Result<Self::Transform, Self::InitError>>;
+
+    fn new_transform(&self, service: S) -> Self::Future {
+        async move {
+            async_io::Timer::after(Duration::from_micros(1)).await;
+            Ok(TestMiddlewareService { service })
+        }
+    }
+}
+
+struct TestMiddlewareService<S> {
+    service: S,
+}
+
+impl<S> Service for TestMiddlewareService<S>
+where
+    S: Service,
+{
+    type Request = S::Request;
+    type Response = S::Response;
+    type Error = S::Error;
+    type Future = impl Future<Output = Result<Self::Response, Self::Error>>;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        self.service.poll_ready(cx)
+    }
+
+    fn call(&mut self, req: Self::Request) -> Self::Future {
+        let fut = self.service.call(req);
+        async move {
+            println!("passing through");
+            fut.await
+        }
+    }
 }
 
 // custom runtime factory
