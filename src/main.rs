@@ -7,13 +7,13 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 use std::time::{Duration, Instant};
 
+use actix_codec::{AsyncRead, AsyncWrite, ReadBuf};
 use actix_server::{FromMio, MioStream, ServiceStream};
 use actix_web::dev::{Service, Transform};
 use actix_web::rt::{RuntimeFactory, RuntimeService, SleepService};
-use actix_web::{get, App, HttpServer};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
 use async_std::io::{Read, Write};
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
-use tokio::io::{AsyncRead, AsyncWrite};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -32,8 +32,8 @@ async fn main() -> std::io::Result<()> {
 }
 
 #[get("/")]
-async fn index() -> &'static str {
-    "Ok"
+async fn index() -> impl Responder {
+    HttpResponse::Ok().finish()
 }
 
 struct TestMiddleware;
@@ -62,8 +62,8 @@ struct TestMiddlewareService<S> {
 }
 
 impl<S> Service for TestMiddlewareService<S>
-    where
-        S: Service,
+where
+    S: Service,
 {
     type Request = S::Request;
     type Response = S::Response;
@@ -76,9 +76,7 @@ impl<S> Service for TestMiddlewareService<S>
 
     fn call(&self, req: Self::Request) -> Self::Future {
         let fut = self.service.call(req);
-        async move {
-            fut.await
-        }
+        async move { fut.await }
     }
 }
 
@@ -117,7 +115,7 @@ impl RuntimeFactory for AsyncStdRtFactory {
         async_std::task::block_on(f)
     }
 
-    fn spawn<F: Future<Output = ()> + 'static>(_: &mut Self::Runtime, f: F) {
+    fn spawn<F: Future + 'static>(_: &mut Self::Runtime, f: F) {
         async_std::task::spawn_local(f);
     }
 }
@@ -126,7 +124,7 @@ impl RuntimeFactory for AsyncStdRtFactory {
 impl RuntimeService for AsyncStdRt {
     type Sleep = AsyncStdSleep;
 
-    fn spawn<F: Future<Output = ()> + 'static>(f: F) {
+    fn spawn<F: Future + 'static>(f: F) {
         async_std::task::spawn_local(f);
     }
 
@@ -163,9 +161,13 @@ impl AsyncRead for AsyncStdTcpStream {
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
-        buf: &mut [u8],
-    ) -> Poll<io::Result<usize>> {
-        Pin::new(&mut self.get_mut().0).poll_read(cx, buf)
+        buf: &mut ReadBuf<'_>,
+    ) -> Poll<io::Result<()>> {
+        Pin::new(&mut self.get_mut().0)
+            .poll_read(cx, buf.initialize_unfilled())
+            .map_ok(|n| {
+                buf.advance(n);
+            })
     }
 }
 
